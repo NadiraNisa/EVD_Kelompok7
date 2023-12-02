@@ -1,5 +1,5 @@
 <div align="center">
-<img width="300" alt="statistik" src="![statistik](https://github.com/NadiraNisa/EVD_Kelompok7/assets/111562803/1d1f3c37-bb24-4b9c-aef6-df0f4f8f9932)">
+<src="![statistik](https://github.com/NadiraNisa/EVD_Kelompok7/assets/111562803/1d1f3c37-bb24-4b9c-aef6-df0f4f8f9932)">
 
 
 
