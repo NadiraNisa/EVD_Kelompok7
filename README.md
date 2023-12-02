@@ -42,10 +42,10 @@ Modus adalah
 ## :construction_worker_woman: **Anggota**
 <div align="justify">
   
-1️⃣ Irsyifa Mayzel Afnan   (G1501222062)
+1️⃣ Irsyifa Mayzela Afnan   (G1501222062)
 
-2️⃣ Nadira Nisa Alwani     (G1501222048)
+2️⃣ Nadira Nisa Alwani      (G1501222048)
 
-3️⃣ Adeline vinda Septiani (G1501221016)
+3️⃣ Adeline vinda Septiani  (G1501221016)
 
 </div>
