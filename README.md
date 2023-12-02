@@ -6,7 +6,7 @@
 • [Median](#computer-Median) 
 • [Mean](#pen-Mean)
 • [Modus](#memo-Modus)
-• [Anggota](#contraction_worker_woman-Anggota)
+• [Anggota](#construction_worker_woman-Anggota)
   
 </div>
   
@@ -39,7 +39,8 @@ Modus adalah
 </div>
 
 
-## :contraction_worker_woman: **Anggota**
+## :construction_worker_woman: **Anggota**
+:wom
 Irsyifa Mayzel Afnan   (G1501222062)
 Nadira Nisa Alwani     (G1501222048)
 Adeline vinda Septiani (G1501221016)
