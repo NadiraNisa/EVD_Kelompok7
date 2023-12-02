@@ -2,7 +2,7 @@
 
 # **Pemusatan Data Statistik**
 
-• [Pendahuluan](#video_camera-Pendahuluan)
+• [Pendahuluan](#book-Pendahuluan)
 • [Median](#computer-Median) 
 • [Mean](#pen-Mean)
 • [Modus](#memo-Modus)
@@ -11,7 +11,7 @@
 </div>
   
 
-## :video_camera: **Pendahuluan**
+## :book: **Pendahuluan**
 <div align="justify">
   Pemusatan Data adalah
 </div>
