@@ -1,8 +1,7 @@
 <div align="center">
-<img width="300" alt="logo ipb" src="https://github.com/NadiraNisa/Nadnad/assets/111562803/98189826-c996-4c9a-84d7-622d09cc96d1">
+<img width="300" alt="statistik" src="![image](https://github.com/NadiraNisa/EVD_Kelompok7/assets/111562803/0350d814-99e6-4d9f-bad4-321ac8b5f3da)">
 
-  
-# **Visualiasi Data Release Movie**
+# **Pemusatan Data Statistik**
 
 • [Pendahuluan](#video_camera-Pendahuluan)
 • [Median](#computer-Median) 
