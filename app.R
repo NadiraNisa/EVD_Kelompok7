@@ -110,12 +110,12 @@ server <- function(input, output) {
       numeric_values <- as.numeric(strsplit(input$custom_input, " ")[[1]])
       return(numeric_values)
     } else if (input$selected_data == "Sample Data") {
-      excel_data <- read_excel("D:/MAGISTER/SEMESTER 3/evd/irsyifa/tinggi badan.xlsx")
+      excel_data <- read_excel("D:/MAGISTER/SEMESTER 3/evd/irsyifa/data kelompok.xlsx")
       array_data <- excel_data %>%
-        select("Tinggi_Badan")
+        select("nilai")
       
       max_data <- input$slider_input
-      result_data <- array_data$Tinggi_Badan[1:max_data]
+      result_data <- array_data$nilai[1:max_data]
       return(result_data)
     }
   })
