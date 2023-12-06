@@ -27,8 +27,8 @@ choice_options <- c("Sample Data", "Create your own", "Supply numeric values")
 
 # Define UI
 ui <- navbarPage(
-  title="Mean, Median, Modus",
-  tabPanel("Dashboard",
+  title="Ukuran Pemusatan Data",
+  tabPanel("Mean, Median, Modus",
            # Sidebar layout with input and output definitions
            sidebarLayout(
              sidebarPanel(
