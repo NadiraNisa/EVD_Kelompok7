@@ -27,7 +27,7 @@ choice_options <- c("Sample Data", "Create your own", "Supply numeric values")
 
 # Define UI
 ui <- navbarPage(
-  title="R Shiny Dashboard",
+  title="Mean, Median, Modus",
   tabPanel("Dashboard",
            # Sidebar layout with input and output definitions
            sidebarLayout(
