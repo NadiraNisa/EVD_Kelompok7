@@ -51,7 +51,7 @@ ui <- navbarPage(
                
                conditionalPanel(
                  condition = "input.selected_data == 'Sample Data'",
-                 sliderInput("slider_input", "Select a Range:", min = 10, max = 200, value = 100)
+                 sliderInput("slider_input", "Select a Range:", min = 10, max = 200, value = 50)
                ),
                
                h4("Options:"), 
