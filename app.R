@@ -14,6 +14,14 @@ modus <- function(x) {
   uniqx[which.max(tabulate(match(x, uniqx)))]
 }
 
+multiple_modus <- function(x) {
+  tab <- tabulate(match(x, x))
+  max_freq <- max(tab)
+  modes <- unique(x[tab == max_freq])
+  return(modes)
+}
+
+
 # Sample data
 set.seed(123)
 initial_data <- data.frame(
@@ -123,22 +131,24 @@ server <- function(input, output) {
   
   summary_plot <- reactive({
     if (!is.null(selected_data())) {
-      dataset <- data.frame(x=selected_data())
+      dataset <- data.frame(x = selected_data())
       mean_value <- mean(dataset$x)
       mean_value_str <- sprintf("%.2f", mean_value)
-      median_value <-median(dataset$x, na.rm=TRUE)
+      median_value <- median(dataset$x, na.rm = TRUE)
       median_value_str <- sprintf("%.2f", median_value)
-      mode_value <- modus(dataset$x)
-      mode_value_str <- sprintf("%.2f", mode_value)
       
-      ggplot(data=dataset, aes(x = x, y = 1)) +
-        geom_point(aes(shape = "Data"), size = 4, color="blue") +
-        geom_point(aes(x = mean_value, y = 1, shape = "Mean"), size = 4, color="red") +
-        geom_point(aes(x = median_value, y = 1, shape = "Median"), size = 4, color="green") +
-        geom_point(aes(x = mode_value, y = 1, shape = "Modus"), size = 4, color="yellow") +
-        labs(title = "",
-             x = "",
-             y = "") +
+      mode_values <- multiple_modus(dataset$x)
+      mode_values_str <- lapply(mode_values, function(mode_value) sprintf("%.2f", mode_value))
+      
+      # Create a data frame for mode values
+      mode_data <- data.frame(x = as.numeric(mode_values), y = 1, label = "Modus")
+      
+      ggplot(data = dataset, aes(x = x, y = 1)) +
+        geom_point(aes(shape = "Data"), size = 3, color = "#6d6942") +
+        geom_point(aes(x = mean_value, y = 1, shape = "Mean"), size = 4, color = "#baae00") +
+        geom_point(aes(x = median_value, y = 1, shape = "Median"), size = 4, color = "#249bc0") +
+        geom_point(data = mode_data, aes(x = x, y = y, shape = label), size = 4, color = "#ff0000") +
+        labs(title = "", x = "", y = "") +
         scale_shape_manual(
           name = "",
           values = c("Data" = 16, "Mean" = 17, "Median" = 18, "Modus" = 15),
@@ -146,18 +156,18 @@ server <- function(input, output) {
             "Data", 
             paste("Mean (", mean_value_str, ")"), 
             paste("Median (", median_value_str, ")"),
-            paste("Modus (", mode_value_str, ")")
+            paste("Modus (", paste(mode_values_str, collapse = ", "), ")")
           ),
-          guide = guide_legend(override.aes = list(shape = c(16, 17, 18, 15), color = c("blue", "red", "green", "yellow")))
+          guide = guide_legend(override.aes = list(shape = c(16, 17, 18, 15), color = c("#6d6942", "#baae00", "#249bc0", "#ff0000")))
         ) +
         theme_minimal() +
-        theme(legend.position = "top") +
         theme(
+          legend.position = "top",
           axis.title.y = element_blank(),
           axis.text.y = element_blank(),
           axis.ticks.y = element_blank(),
           panel.grid = element_blank(),
-          panel.background = element_rect(fill = "grey"),
+          panel.background = element_rect(fill = "#F2F3F8"),
           plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "cm")
         )
     } else {
@@ -165,13 +175,13 @@ server <- function(input, output) {
         geom_blank() +
         scale_x_continuous(limits = c(0, 100)) +
         theme_minimal() +
-        theme(legend.position = "top") +
         theme(
+          legend.position = "top",
           axis.title.y = element_blank(),
           axis.text.y = element_blank(),
           axis.ticks.y = element_blank(),
           panel.grid = element_blank(),
-          panel.background = element_rect(fill = "grey"),
+          panel.background = element_rect(fill = "#F2F3F8"),
           plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "cm")
         )
     }
@@ -179,27 +189,38 @@ server <- function(input, output) {
   
   summary_table <- reactive({
     if (!is.null(selected_data())) {
-      # Convert selected_data() to a data frame
       data_frame <- data.frame(x = selected_data())
       summary_data <- data_frame %>%
         summarise(
           mean = round(mean(x),3),
+          Q1 = quantile(x, probs=0.25),
           median = round(median(x, na.rm = TRUE),3),
+          Q3 = quantile(x, probs=0.75),
           standard_deviation = round(sd(x),3),
           min = round(min(x),3),
           max = round(max(x),3),
-          mode = round(modus(x),3)
+          mode = ifelse(length(multiple_modus(x)) == 1, multiple_modus(x)[1], paste(multiple_modus(x), collapse = ", "))
         )
+      # Customize column names
+      custom_column_names <- c("Mean", "Q1", "Median", "Q3", "Standard Deviation", "Min", "Max", "Modes")
+      names(summary_data) <- custom_column_names
+      
       datatable(summary_data, options = list(dom = 't'), rownames = FALSE)
     } else {
       empty_table <- data.frame(
         mean = NA,
+        Q1 = NA,
         median = NA,
+        Q3 = NA,
         standard_deviation = NA,
         min = NA,
         max = NA,
         mode = NA
       )
+      # Customize column names
+      custom_column_names <- c("Mean", "Q1", "Median", "Q3", "Standard Deviation", "Min", "Max", "Modes")
+      names(empty_table) <- custom_column_names
+      
       datatable(empty_table, options = list(dom = 't'), rownames = FALSE)
     }
   })
@@ -211,14 +232,21 @@ server <- function(input, output) {
       mean_value_str <- sprintf("%.2f", mean_value)
       median_value <-median(dataset$x, na.rm=TRUE)
       median_value_str <- sprintf("%.2f", median_value)
-      mode_value <- modus(dataset$x)
-      mode_value_str <- sprintf("%.2f", mode_value)
+      mode_values <- multiple_modus(dataset$x)
+      mode_values_str <- lapply(mode_values, function(mode_value) sprintf("%.2f", mode_value))
+      
+      # Create a data frame for mode values
+      mode_data <- data.frame(x = as.numeric(mode_values), y = 1, label = "Modus")
+      
+      # Define custom colors
+      custom_colors <- c(Mean = "#baae00", Median = "#249bc0", Modus = "#ff0000")
       
       histogram_plot <- ggplot(dataset, aes(x = x)) +
-        geom_histogram(binwidth = 1, boundary = 0, color = "black", fill = "steelblue") +
-        geom_point(aes(x = mean_value, y = 0, shape = "Mean"), size = 4, color="red") +
-        geom_point(aes(x = median_value, y = 0, shape = "Median"), size = 4, color="green") +
-        geom_point(aes(x = mode_value, y = 0, shape = "Modus"), size = 4, color="yellow") +
+        geom_histogram(binwidth = 10, boundary = 0, color = "black", fill = "#fae7e7") +
+        geom_vline(aes(xintercept = mean_value, color = "Mean"), linetype = "dashed") +
+        geom_vline(aes(xintercept = median_value, color = "Median"), linetype = "solid") +
+        geom_vline(data = mode_data, aes(xintercept = x, color = "Modus"), linetype = "dotdash") +
+        
         labs(title = "",
              x = "",
              y = "") +
@@ -226,12 +254,20 @@ server <- function(input, output) {
         theme(
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
-          panel.border = element_blank()
+          panel.border = element_blank(),
+          legend.box = "vertical",
+          legend.box.background = element_rect(fill = "white", color = "black")
         ) +
-        guides(shape="none")
+        guides(color = guide_legend(title = "Central Tendency")) +
+        scale_color_manual(
+          name = "",
+          values = custom_colors,
+          labels = c("Mean", "Median", "Modus"),
+          guide = guide_legend(override.aes = list(shape = c(16, 17, 18, 15)))
+        )
       
       boxplot_plot <- ggplot(dataset, aes(x = x, y = 1)) +
-        geom_boxplot(width = 0.01, color = "black", fill = "steelblue") +
+        geom_boxplot(width = 0.01, color = "black", fill = "#87BC95") +
         labs(title = "",
              x = "",
              y = "") +
