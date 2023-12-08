@@ -31,7 +31,7 @@ initial_data <- data.frame(
 
 
 # choice options data
-choice_options <- c("Sample Data", "Create your own", "Supply numeric values")
+choice_options <- c("Contoh Data", "Input Mandiri", "Input Nilai Numerik")
 
 # Define UI
 ui <- navbarPage(
@@ -43,51 +43,51 @@ ui <- navbarPage(
                # Dropdown for selecting data
                selectInput(
                  "selected_data", 
-                 "Select Initial Distribution of Points:", 
+                 "Pilih Data:", 
                  choices = choice_options
                ),
                
                # Conditional panel for additional inputs based on selection
                conditionalPanel(
-                 condition = "input.selected_data == 'Supply numeric values'",
+                 condition = "input.selected_data == 'Input Nilai Numerik'",
                  textInput(
                    "custom_input", 
-                   "Enter sample values, seperated by spaces:",
+                   "masukkan nilai sampel, pisahkan dengan spasi:",
                    value = "7 8 8.5 9 9 9 10 10 10.2 10.5"
                  )
                ),
                
                conditionalPanel(
-                 condition = "input.selected_data == 'Sample Data'",
-                 sliderInput("slider_input", "Select a Range:", min = 10, max = 200, value = 50)
+                 condition = "input.selected_data == 'Contoh Data'",
+                 sliderInput("slider_input", "Atur Rentang:", min = 10, max = 200, value = 50)
                ),
                
-               h4("Options:"), 
+               h4("Pilihlah:"), 
                
-               checkboxInput("show_descriptive_statistics", "Show Descriptive Statistics", value = TRUE),
-               checkboxInput("show_histogram_boxplot", "Show Historgram and Boxplot ", value = TRUE),
+               checkboxInput("show_descriptive_statistics", "Tampilkan Statistik Deskriptif", value = TRUE),
+               checkboxInput("show_histogram_boxplot", "Tampilkan Historgram dan Boxplot ", value = TRUE),
                
                # Button to save visualization
-               downloadButton("save_btn", "First Plot"),
+               downloadButton("save_btn", "Plot Pertama"),
                conditionalPanel(
                  condition = "input.show_histogram_boxplot == true",
-                 downloadButton("save_btn1", "Second Plot"),
+                 downloadButton("save_btn1", "Histogram dan Boxplot"),
                ),
              ),
              
              # Show a plot in the main panel
              mainPanel(
-               h3("Summary Data"),
+               h3("Ringkasan Data"),
                plotOutput("first_plot", click="plot_click"),
                # Conditional panel for additional inputs based on selection
                conditionalPanel(
                  condition = "input.show_descriptive_statistics == true",
-                 h3("Descriptive Statistics:"),
+                 h3("Statistik Deskriptif:"),
                  DTOutput("summary_table"),
                ),
                conditionalPanel(
                  condition = "input.show_histogram_boxplot == true",
-                 h3("Histogram"),
+                 h3("Histogram dan Boxplot"),
                  plotOutput("plot")
                ),
              )
@@ -102,7 +102,7 @@ server <- function(input, output) {
   
   # Click event to add points
   observeEvent(input$plot_click, {
-    if (input$selected_data == "Create your own") {
+    if (input$selected_data == "Input Mandiri") {
       new_point <- data.frame(x = input$plot_click$x, y = input$plot_click$y)
       rv$data <- rbind(rv$data, new_point)
     }
@@ -111,13 +111,13 @@ server <- function(input, output) {
   
   # Reactive expression for the selected data
   selected_data <- reactive({
-    if (input$selected_data == "Create your own") {
+    if (input$selected_data == "Input Mandiri") {
       return(rv$data$x)
-    } else if (input$selected_data == "Supply numeric values") {
+    } else if (input$selected_data == "Input Nilai Numerik") {
       # Parse space-separated numeric values
       numeric_values <- as.numeric(strsplit(input$custom_input, " ")[[1]])
       return(numeric_values)
-    } else if (input$selected_data == "Sample Data") {
+    } else if (input$selected_data == "Contoh Data") {
       excel_data <- read_excel("D:/MAGISTER/SEMESTER 3/evd/irsyifa/data kelompok.xlsx")
       array_data <- excel_data %>%
         select("nilai")
@@ -144,7 +144,7 @@ server <- function(input, output) {
       mode_data <- data.frame(x = as.numeric(mode_values), y = 1, label = "Modus")
       
       ggplot(data = dataset, aes(x = x, y = 1)) +
-        geom_point(aes(shape = "Data"), size = 3, color = "#6d6942") +
+        geom_point(aes(shape = "Data"), size = 4, color = "#6d6942") +
         geom_point(aes(x = mean_value, y = 1, shape = "Mean"), size = 4, color = "#baae00") +
         geom_point(aes(x = median_value, y = 1, shape = "Median"), size = 4, color = "#249bc0") +
         geom_point(data = mode_data, aes(x = x, y = y, shape = label), size = 4, color = "#ff0000") +
@@ -202,7 +202,7 @@ server <- function(input, output) {
           mode = ifelse(length(multiple_modus(x)) == 1, multiple_modus(x)[1], paste(multiple_modus(x), collapse = ", "))
         )
       # Customize column names
-      custom_column_names <- c("Mean", "Q1", "Median", "Q3", "Standard Deviation", "Min", "Max", "Modes")
+      custom_column_names <- c("Rataan", "Q1", "Nilai tengah", "Q3", "Standar deviasi", "Minimum", "Maksimum", "Modus")
       names(summary_data) <- custom_column_names
       
       datatable(summary_data, options = list(dom = 't'), rownames = FALSE)
