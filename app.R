@@ -35,8 +35,8 @@ choice_options <- c("Contoh Data", "Input Mandiri", "Input Nilai Numerik")
 
 # Define UI
 ui <- navbarPage(
-  title="Ukuran Pemusatan Data",
-  tabPanel("Mean, Median, Modus",
+  title="Mean, Median, Modus",
+  tabPanel("Dashboard",
            # Sidebar layout with input and output definitions
            sidebarLayout(
              sidebarPanel(
@@ -65,7 +65,7 @@ ui <- navbarPage(
                h4("Pilihlah:"), 
                
                checkboxInput("show_descriptive_statistics", "Tampilkan Statistik Deskriptif", value = TRUE),
-               checkboxInput("show_histogram_boxplot", "Tampilkan Historgram dan Boxplot ", value = TRUE),
+               checkboxInput("show_histogram_boxplot", "Tampilkan Histogram dan Boxplot ", value = TRUE),
                
                # Button to save visualization
                downloadButton("save_btn", "Plot Pertama"),
@@ -118,7 +118,7 @@ server <- function(input, output) {
       numeric_values <- as.numeric(strsplit(input$custom_input, " ")[[1]])
       return(numeric_values)
     } else if (input$selected_data == "Contoh Data") {
-      excel_data <- read_excel("D:/MAGISTER/SEMESTER 3/evd/irsyifa/data kelompok.xlsx")
+      excel_data <- read_excel("D:/Nadira Nisa Alwani/Pasca Sarjana/Kuliah/semester 3/eksplorasi dan visualisasi/dashboard/data/data kelompok.xlsx")
       array_data <- excel_data %>%
         select("nilai")
       
@@ -154,8 +154,8 @@ server <- function(input, output) {
           values = c("Data" = 16, "Mean" = 17, "Median" = 18, "Modus" = 15),
           labels = c(
             "Data", 
-            paste("Mean (", mean_value_str, ")"), 
-            paste("Median (", median_value_str, ")"),
+            paste("Rataan (", mean_value_str, ")"), 
+            paste("Nilai Tengah (Q2) (", median_value_str, ")"),
             paste("Modus (", paste(mode_values_str, collapse = ", "), ")")
           ),
           guide = guide_legend(override.aes = list(shape = c(16, 17, 18, 15), color = c("#6d6942", "#baae00", "#249bc0", "#ff0000")))
@@ -202,7 +202,7 @@ server <- function(input, output) {
           mode = ifelse(length(multiple_modus(x)) == 1, multiple_modus(x)[1], paste(multiple_modus(x), collapse = ", "))
         )
       # Customize column names
-      custom_column_names <- c("Rataan", "Q1", "Nilai tengah", "Q3", "Standar deviasi", "Minimum", "Maksimum", "Modus")
+      custom_column_names <- c("Rataan", "Q1", "Nilai tengah (Q2)", "Q3", "Standar deviasi", "Min", "Maks", "Modus")
       names(summary_data) <- custom_column_names
       
       datatable(summary_data, options = list(dom = 't'), rownames = FALSE)
@@ -218,7 +218,7 @@ server <- function(input, output) {
         mode = NA
       )
       # Customize column names
-      custom_column_names <- c("Mean", "Q1", "Median", "Q3", "Standard Deviation", "Min", "Max", "Modes")
+      custom_column_names <- c("Mean", "Q1", "Nilai Tengah (Q2)", "Q3", "Standard Deviation", "Min", "Maks", "Modus")
       names(empty_table) <- custom_column_names
       
       datatable(empty_table, options = list(dom = 't'), rownames = FALSE)
@@ -258,11 +258,11 @@ server <- function(input, output) {
           legend.box = "vertical",
           legend.box.background = element_rect(fill = "white", color = "black")
         ) +
-        guides(color = guide_legend(title = "Central Tendency")) +
+        guides(color = guide_legend(title = "Keterangan")) +
         scale_color_manual(
           name = "",
           values = custom_colors,
-          labels = c("Mean", "Median", "Modus"),
+          labels = c("Rataan", "Nilai Tengah", "Modus"),
           guide = guide_legend(override.aes = list(shape = c(16, 17, 18, 15)))
         )
       
