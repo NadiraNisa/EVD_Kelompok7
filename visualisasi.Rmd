@@ -1,0 +1,30 @@
+---
+title: "Visualisasi"
+author: "Nadira Nisa Alwani"
+date: "2023-12-11"
+output: html_document
+---
+
+
+## **Histogram**
+
+Histogram adalah jenis grafik yang menampilkan distribusi frekuensi dari suatu variabel numerik. Setiap bar (batang) pada histogram mencakup rentang nilai tertentu (dikenal sebagai bin atau kelas) dan tinggi bar yang menunjukkan frekuensi data dalam rentang tersebut.
+
+Kegunaan histogram:
+1. Mengidentifikasi distribusi data,
+2. Mendeteksi outlier, 
+3. Mmenganalisis tren, 
+4. ⁠dan lainnya
+
+Contoh Histogram
+
+
+![](histogram.png)
+
+## **Boxplot**
+
+Boxplot merupakan ringkasan distribusi sampel yang disajikan secara grafis yang bisa menggambarkan bentuk distribusi data (skewness), ukuran tendensi sentral dan ukuran penyebaran (keragaman) data pengamatan.
+
+Bagian Boxplot
+
+![](boxplot.png)
