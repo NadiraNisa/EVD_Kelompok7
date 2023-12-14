@@ -8,6 +8,8 @@ library(DT)
 library(dplyr)
 library(readxl)
 library(cowplot)
+library(markdown)
+library(rmdformats)
 
 modus <- function(x) {
   uniqx <- unique(x)
@@ -31,7 +33,7 @@ initial_data <- data.frame(
 
 
 # choice options data
-choice_options <- c("Contoh Data", "Input Mandiri", "Input Nilai Numerik")
+choice_options <- c("Data Berat Badan", "Input Mandiri", "Input Nilai Numerik")
 
 # Define UI
 ui <- navbarPage(
@@ -49,30 +51,34 @@ ui <- navbarPage(
                
                # Conditional panel for additional inputs based on selection
                conditionalPanel(
+                 condition = "input.selected_data == 'Data Berat Badan'",
+                 sliderInput("slider_input", "Atur Rentang:", min = 10, max = 100, value = 100)
+               ),
+               
+               conditionalPanel(
                  condition = "input.selected_data == 'Input Nilai Numerik'",
                  textInput(
                    "custom_input", 
                    "masukkan nilai sampel, pisahkan dengan spasi:",
-                   value = "7 8 8.5 9 9 9 10 10 10.2 10.5"
+                   value = "10 10 10 22 33 35"
                  )
                ),
                
-               conditionalPanel(
-                 condition = "input.selected_data == 'Contoh Data'",
-                 sliderInput("slider_input", "Atur Rentang:", min = 10, max = 200, value = 50)
-               ),
+               
                
                h4("Pilihlah:"), 
                
+               
                checkboxInput("show_descriptive_statistics", "Tampilkan Statistik Deskriptif", value = TRUE),
-               checkboxInput("show_histogram_boxplot", "Tampilkan Histogram dan Boxplot ", value = TRUE),
+               checkboxInput("show_histogram_boxplot", "Tampilkan Histogram", value = TRUE),
+               checkboxInput("show_boxplot", "Tampilkan Boxplot ", value = TRUE),
                
                # Button to save visualization
                downloadButton("save_btn", "Plot Pertama"),
                conditionalPanel(
                  condition = "input.show_histogram_boxplot == true",
-                 downloadButton("save_btn1", "Histogram dan Boxplot"),
-               ),
+                 downloadButton("save_btn1", "Plot Kedua")
+               )
              ),
              
              # Show a plot in the main panel
@@ -87,13 +93,32 @@ ui <- navbarPage(
                ),
                conditionalPanel(
                  condition = "input.show_histogram_boxplot == true",
-                 h3("Histogram dan Boxplot"),
-                 plotOutput("plot")
-               ),
+                 h3("Histogram"),
+                 plotOutput("plot"),
+               ), 
+               conditionalPanel(
+                 condition = "input.show_boxplot == true",
+                 h3("Boxplot"),
+                 plotOutput("plott")
+               )
              )
            )
-  )
+  ),#tabPanel(), Home
+  
+  tabPanel("Informasi Statistika Deskriptif", 
+           titlePanel(title = h3(strong(""), align = "center")), 
+           includeMarkdown("pemusatan1.rmd"), 
+               align="justify"), #tabPanel(), About
+  
+  
+  #tabPanel(), Home
+  
+  tabPanel("Informasi Visualisasi", 
+           titlePanel(title = h3(strong(""), align = "center")), 
+           includeMarkdown("visualisasi.Rmd"), 
+               align="justify"), #tabPanel(), About
 )
+
 
 # Define server logic
 server <- function(input, output) {
@@ -117,8 +142,8 @@ server <- function(input, output) {
       # Parse space-separated numeric values
       numeric_values <- as.numeric(strsplit(input$custom_input, " ")[[1]])
       return(numeric_values)
-    } else if (input$selected_data == "Contoh Data") {
-      excel_data <- read_excel("D:/Nadira Nisa Alwani/Pasca Sarjana/Kuliah/semester 3/eksplorasi dan visualisasi/dashboard/data/data kelompok.xlsx")
+    } else if (input$selected_data == "Data Berat Badan") {
+      excel_data <- read_excel("data kelompok.xlsx")
       array_data <- excel_data %>%
         select("nilai")
       
@@ -169,7 +194,8 @@ server <- function(input, output) {
           panel.grid = element_blank(),
           panel.background = element_rect(fill = "#F2F3F8"),
           plot.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "cm")
-        )
+        )+
+        lims(x=c(0,100))
     } else {
       ggplot() +
         geom_blank() +
@@ -235,6 +261,7 @@ server <- function(input, output) {
       mode_values <- multiple_modus(dataset$x)
       mode_values_str <- lapply(mode_values, function(mode_value) sprintf("%.2f", mode_value))
       
+      
       # Create a data frame for mode values
       mode_data <- data.frame(x = as.numeric(mode_values), y = 1, label = "Modus")
       
@@ -264,7 +291,34 @@ server <- function(input, output) {
           values = custom_colors,
           labels = c("Rataan", "Nilai Tengah", "Modus"),
           guide = guide_legend(override.aes = list(shape = c(16, 17, 18, 15)))
-        )
+        ) 
+      lims(x=c(0,100))
+      
+      
+      plot_grid(histogram_plot,  nrow = 2, rel_heights = c(3, 1))
+    }
+  })
+  
+  is_show_histogram_boxplot <- reactive({
+    input$show_histogram_boxplot
+  })
+  
+  box_plot <- reactive({
+    if (!is.null(selected_data())) {
+      dataset <- data.frame(x=selected_data())
+      mean_value <- mean(dataset$x)
+      mean_value_str <- sprintf("%.2f", mean_value)
+      median_value <-median(dataset$x, na.rm=TRUE)
+      median_value_str <- sprintf("%.2f", median_value)
+      mode_values <- multiple_modus(dataset$x)
+      mode_values_str <- lapply(mode_values, function(mode_value) sprintf("%.2f", mode_value))
+      
+      
+      # Create a data frame for mode values
+      mode_data <- data.frame(x = as.numeric(mode_values), y = 1, label = "Modus")
+      
+      # Define custom colors
+      custom_colors <- c(Mean = "#baae00", Median = "#249bc0", Modus = "#ff0000")
       
       boxplot_plot <- ggplot(dataset, aes(x = x, y = 1)) +
         geom_boxplot(width = 0.01, color = "black", fill = "#87BC95") +
@@ -281,16 +335,16 @@ server <- function(input, output) {
           axis.title.y = element_blank(),
           axis.text.y = element_blank(),
           axis.ticks.y = element_blank()
-        )
+        ) +
+        lims(x=c(0,100))
       
-      plot_grid(histogram_plot, boxplot_plot, nrow = 2, rel_heights = c(3, 1))
+      plot_grid(boxplot_plot,  nrow = 2, rel_heights = c(3, 1))
     }
   })
   
-  is_show_histogram_boxplot <- reactive({
-    input$show_histogram_boxplot
-  })
-  
+  is_show_boxplot <- reactive({
+    input$show_boxplot
+  })  
   
   # generate mean median
   output$first_plot <- renderPlot({
@@ -308,6 +362,11 @@ server <- function(input, output) {
     hist_plot()
   })
   
+  # Generate boxplot plot
+  output$plott <- renderPlot({
+    box_plot()
+  })
+  
   # Save plot as PNG
   output$save_btn <- downloadHandler(
     filename = function() {
@@ -317,7 +376,6 @@ server <- function(input, output) {
       ggsave(file, summary_plot())
     }
   )
-  
   
   # Save plot as PNG
   output$save_btn1 <- downloadHandler(
@@ -331,6 +389,7 @@ server <- function(input, output) {
     }
   )
 }
+
 
 # Run the application
 shinyApp(ui, server)
