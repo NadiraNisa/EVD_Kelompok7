@@ -11,14 +11,14 @@ Ukuran pemusatan data adalah nilai yang diperoleh dari sekumpulan data yang dapa
 Ukuran pemusatan data terdiri dari, rataan (mean), nilai tengah (median atau Q2) , dan modus.
 
 
-###Rataan (Mean)
+### Rataan (Mean)
 
 Mean dapat dikatakan sebagai wakil kumpulan data. Menentukan mean dapat dilakukan dengan cara menjumlahkan seluruh nilai data, kemudian membaginya dengan banyaknya data.
 
 ![](rataan.png)
 
 
-###Nilai Tengah (Median) 
+### Nilai Tengah (Median) 
 
 Median (Q2) adalah nilai tengah dari sekumpulan data setelah diurutkan dari data yang terkecil sampai data terbesar, maupun sebaliknya. 
 Apabila suatu data mempunyai median, maka mediannya tunggal.
@@ -34,13 +34,13 @@ Jika banyak data bilangan genap maka :
 ![](me_genap.png)
 
 
-###Modus 
+### Modus 
 
 Modus adalah data yang paling sering muncul untuk menyatakan fenomena yang paling banyak terjadi. Modus merupakan nilai yang memiliki frekuensi tertinggi. 
 Sekumpulan data yang diperoleh, memungkinkan untuk memiliki nilai modus yang tidak tunggal atau mungkin juga tidak memilikinya.
 
 
-###Kuartil Bawah (Q1)
+### Kuartil Bawah (Q1)
 Data Ganjil
 
 ![](q1_ganjil.png)
@@ -51,7 +51,7 @@ Data Genap
 ![](q1_genap.png)
 
 
-###Kuartil Atas (Q3)
+### Kuartil Atas (Q3)
 Data Ganjil
 
 ![](q3_ganjil.png)
@@ -65,7 +65,7 @@ Data Genap
 
 Suatu ukuran yang menyatakan seberapa besar nilai nilai data berbeda atau bervariasi dengan nilai ukuran pusatnya atau seberapa penyimpangan nilai nilai data dengan nilai pusatnya. 
 
-###Jangkauan atau Range
+### Jangkauan atau Range
 Jangkauan adalah selisih antara nilai maksimum dan nilai minimum yang terdapat dalam data.
 
   Nilai Maksimum : nilai tertinggi dalam data
@@ -79,7 +79,7 @@ Jangkauan atau range dapat dihitung dengan:
 ![](range.png)
 
 
-###Standar Deviasi
+### Standar Deviasi
 
 untuk populasi (n > 30)
 
